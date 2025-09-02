@@ -1,0 +1,69 @@
+/* Wrapper styles */
+.editor-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.editor-card {
+  width: 90%;
+  max-width: 1000px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.editor-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.editor-divider {
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+
+.editor-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Override Pintura defaults for light mode */
+.pintura-light {
+  --color-background: 255, 255, 255; /* white */
+  --color-foreground: 34, 34, 34;     /* dark gray text */
+  --color-primary: 79, 70, 229;       /* indigo */
+  --color-primary-hover: 67, 56, 202;
+  --color-border: 229, 231, 235;
+
+  background: #ffffff !important;
+}
+
+/* Ensure the stage is not black */
+.pintura-light .pintura-editor-stage {
+  background: #ffffff !important;
+}
+
+/* Toolbars */
+.pintura-light .pintura-editor-toolbar {
+  background: #fafafa !important;
+  border-top: 1px solid #e5e7eb !important;
+}
+
+.pintura-light button {
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.pintura-light button:hover {
+  background: #f3f4f6 !important;
+}
