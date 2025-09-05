@@ -1,29 +1,53 @@
-import React, { useRef, useEffect } from 'react';
-import { PinturaEditor } from '@pqina/react-pintura';
-import { getEditorDefaults } from '@pqina/pintura';
-import '@pqina/pintura/pintura.css';
+import React, { useRef, useEffect } from "react";
+import { PinturaEditor } from "@pqina/react-pintura";
+import {
+  getEditorDefaults,
+  setPlugins,
+  plugin_sticker,
+  plugin_sticker_locale_en_gb,
+
+  createDefaultColorOptions,
+  createMarkupEditorBackgroundColorControl,
+  createMarkupEditorStrokeColorControl,
+  createMarkupEditorFontColorControl, // ✅ correct import for text
+  createMarkupEditorColorOptions,
+  createMarkupEditorShapeStyleControls,
+} from "@pqina/pintura";
+import "@pqina/pintura/pintura.css";
+
+setPlugins(plugin_sticker);
+
+plugin_sticker_locale_en_gb.stickerLabel = 'Image';
+plugin_sticker_locale_en_gb.stickerIcon = `
+<g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" stroke-width=".125em">
+  <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+  <path d="M16 8.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+  <path d="M5 15l4-4 4 4 5-5 4 4"/>
+</g>`;
 
 const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
   const editorRef = useRef(null);
 
-  // Get default configuration
   const editorDefaults = getEditorDefaults();
 
-  // Add styles to head on mount
   useEffect(() => {
-    const styleElement = document.createElement('style');
+    const styleElement = document.createElement("style");
     styleElement.textContent = styles;
     document.head.appendChild(styleElement);
-
     return () => {
       document.head.removeChild(styleElement);
     };
   }, []);
 
+  const colorOptions = createMarkupEditorColorOptions(createDefaultColorOptions());
+
   const editorConfig = {
     ...editorDefaults,
-    
-    // UI Layout & Positioning - Modern responsive design
+
+    utils: ["crop", "filter", "finetune", "annotate", "sticker", "resize"],
+    stickers: ['😅', '🏃', '🏃‍♂️'],
+    stickerStickToImage: true,
+
     layoutDirectionPreference: 'auto', // Auto-adapt to screen orientation
     layoutHorizontalUtilsPreference: 'left', // Tools on left for better UX
     layoutVerticalUtilsPreference: 'bottom', // Mobile-friendly bottom nav
@@ -68,21 +92,28 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     // Toolbar & Utils
     enableToolbar: true,
     enableUtils: true,
-    
-    // Customize available tools (remove unused ones for cleaner UI)
-    utils: [
-      'crop',
-      'filter', 
-      'finetune',
-      'annotate',
-      'decorate',
-      'resize'
-    ],
-    
-    // Custom Status Messages
-    status: undefined, // Can be used for loading states
-    
-    // Localization - Customize button labels for better UX
+
+    // ✅ Custom color controls for annotate + decorate
+    markupEditorShapeStyleControls: createMarkupEditorShapeStyleControls({
+      backgroundColor: createMarkupEditorBackgroundColorControl(colorOptions, {
+        enableInput: true,
+        enableOpacity: true,
+        enablePicker: true,
+        enableEyeDropper: true,
+      }),
+      strokeColor: createMarkupEditorStrokeColorControl(colorOptions, {
+        enableInput: true,
+        enableOpacity: true,
+        enablePicker: true,
+        enableEyeDropper: true,
+      }),
+      textColor: createMarkupEditorFontColorControl(colorOptions, {
+        enableInput: true,
+        enableOpacity: true,
+        enablePicker: true,
+        enableEyeDropper: true,
+      }),
+    }),
     locale: {
       ...editorDefaults.locale,
       labelButtonExport: 'Save Changes',
@@ -90,6 +121,7 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
       labelClose: 'Cancel',
       labelAuto: 'Auto',
       labelEdit: 'Edit Image',
+      ...plugin_sticker_locale_en_gb,
     },
     
     // Event Handlers
@@ -160,28 +192,21 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
   );
 };
 
-// CSS Styles for enhanced appearance - moved above component for hoisting
 const styles = `
   .pintura-editor-wrapper {
-    /* Container styling */
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     background: #fff;
     position: relative;
   }
-  
   .pintura-editor {
     height: 600px;
     min-height: 400px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    
-    /* Custom transparency grid colors */
     --grid-color-even: rgba(248, 249, 250, 0.8);
     --grid-color-odd: rgba(233, 236, 239, 0.8);
     --grid-size: 16;
-    
-    /* Custom color scheme for modern look */
     --pintura-color-primary: #3b82f6;
     --pintura-color-primary-hover: #2563eb;
     --pintura-color-background: #ffffff;
@@ -189,8 +214,6 @@ const styles = `
     --pintura-color-text: #374151;
     --pintura-color-text-secondary: #6b7280;
     --pintura-border-radius: 8px;
-    
-    /* Enhanced button styling */
     --pintura-button-background: #f8fafc;
     --pintura-button-background-hover: #e2e8f0;
     --pintura-button-text-color: #475569;
