@@ -35,7 +35,12 @@ import {
     createDefaultFontSizeOptions,
     createDefaultLineHeightOptions,
     createDefaultFontFamilyOptions,
-    createDefaultFontScaleOptions
+    createDefaultFontScaleOptions,
+    createMarkupEditorStrokeColorControl,
+    createMarkupEditorFontColorControl, // ✅ correct import for text
+    createMarkupEditorBackgroundColorControl,
+    createMarkupEditorColorOptions,
+    createDefaultColorOptions
 } from '@pqina/pintura';
 
 setPlugins(
@@ -53,6 +58,9 @@ plugin_sticker_locale_en_gb.stickerIcon = `
   <path d="M16 8.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
   <path d="M5 15l4-4 4 4 5-5 4 4"/>
 </g>`;
+
+  const colorOptions = createMarkupEditorColorOptions(createDefaultColorOptions());
+
 
 const editorDefaults = {
     utils: ['crop', 'finetune', 'filter', 'annotate', 'sticker'],
@@ -82,7 +90,26 @@ const editorDefaults = {
             ['Viaoda Libre', 'Viaoda Libre'],
             ...createDefaultFontFamilyOptions(),
         ],
+        backgroundColor: createMarkupEditorBackgroundColorControl(colorOptions, {
+            enableInput: true,
+            enableOpacity: true,
+            enablePicker: true,
+            enableEyeDropper: true,
+        }),
+        strokeColor: createMarkupEditorStrokeColorControl(colorOptions, {
+            enableInput: true,
+            enableOpacity: true,
+            enablePicker: true,
+            enableEyeDropper: true,
+        }),
+        textColor: createMarkupEditorFontColorControl(colorOptions, {
+            enableInput: true,
+            enableOpacity: true,
+            enablePicker: true,
+            enableEyeDropper: true,
+        }),
     }),
+
 };
 
 export default function Example() {
