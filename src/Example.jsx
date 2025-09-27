@@ -68,6 +68,7 @@ const editorDefaults = {
     imageWriter: createDefaultImageWriter(),
     imageOrienter: createDefaultImageOrienter(),
     shapePreprocessor: createDefaultShapePreprocessor(),
+    zoomLevel: 0.75,
     ...plugin_finetune_defaults,
     ...plugin_filter_defaults,
     ...markup_editor_defaults,
@@ -227,7 +228,8 @@ export default function Example() {
                 <PinturaEditor
                     {...editorDefaults}
                     ref={editorRef}
-                    src={frameSrc}
+                    // src={frameSrc}
+                    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
                     onLoad={addAnnotations}
                     onUpdate={handleEditorUpdate}
                     onProcess={({ dest }) => setResult(URL.createObjectURL(dest))}

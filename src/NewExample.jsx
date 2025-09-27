@@ -54,21 +54,21 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     layoutVerticalToolbarPreference: 'top', // Toolbar at top for easy access
     layoutVerticalControlGroupsPreference: 'bottom', // Controls at bottom
     layoutVerticalControlTabsPreference: 'bottom', // Tabs below controls
-    
+
     // Visual Enhancements
     enableTransparencyGrid: true, // Show transparency grid for transparent images
     previewUpscale: true, // Better preview scaling
     previewMaskOpacity: 0.92, // Subtle mask opacity
     zoomMaskOpacity: 0.88, // Smooth zoom overlay
-    
+
     // Performance & Quality
     previewImageDataMaxSize: { width: 2048, height: 2048 }, // High quality preview
     elasticityMultiplier: 8, // Smooth elastic interactions
-    
+
     // Animation & Interactions
     animations: 'auto', // Enable smooth animations
     fixScrollDirection: true, // Fix macOS scroll direction
-    
+
     // Zoom Configuration
     enableZoom: true,
     enableZoomControls: true,
@@ -76,19 +76,19 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     zoomAdjustStep: 0.25,
     zoomAdjustFactor: 0.15, // Smooth zoom speed
     zoomAdjustWheelFactor: 1.2, // Responsive scroll zoom
-    
+    zoomLevel: 1,
     // Enable User-Friendly Features
     enablePan: true,
     enableDropImage: true, // Drag & drop support
     enablePasteImage: true, // Paste from clipboard
     enableBrowseImage: true, // Click to browse for image
-    
+
     // Button Configuration
     enableButtonClose: false, // Customize based on your modal needs
     enableButtonExport: true,
     enableButtonRevert: true,
     enableNavigateHistory: true, // Undo/redo buttons
-    
+
     // Toolbar & Utils
     enableToolbar: true,
     enableUtils: true,
@@ -123,13 +123,13 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
       labelEdit: 'Edit Image',
       ...plugin_sticker_locale_en_gb,
     },
-    
+
     // Event Handlers
     handleEvent: (type, detail) => {
       // Log events for debugging (remove in production)
       console.log(`Pintura Event: ${type}`, detail);
     },
-    
+
     // Confirmation Hooks for Better UX
     willClose: async () => {
       // Add confirmation dialog if user has unsaved changes
@@ -139,29 +139,29 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
       }
       return true;
     },
-    
+
     willRevert: async () => {
       return window.confirm('This will reset all your changes. Are you sure?');
     },
-    
+
     willProcessImage: async () => {
       // Show processing status
       if (editorRef.current?.editor) {
         editorRef.current.editor.status = ['Processing image...', 0.5];
-        
+
         // Simulate processing delay (remove this in production)
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         // Clear status
         editorRef.current.editor.status = undefined;
       }
       return true;
     },
-    
+
     // Custom request handling for assets
     willRequest: (url, info) => {
       const { resourceType } = info;
-      
+
       // Add custom headers for image requests if needed
       if (resourceType === 'image') {
         return {
@@ -170,13 +170,13 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
           },
         };
       }
-      
+
       // Allow all stylesheet requests from CDN
       if (resourceType === 'stylesheet') {
         return true;
       }
     },
-    
+
     ...props // Allow overriding any config
   };
 
@@ -199,10 +199,14 @@ const styles = `
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     background: #fff;
     position: relative;
-  }
+    width: 1100px;
+      margin: 0 auto;       
+  display: block;
+]  }
   .pintura-editor {
-    height: 600px;
+    height: 800px;
     min-height: 400px;
+
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --grid-color-even: rgba(248, 249, 250, 0.8);
     --grid-color-odd: rgba(233, 236, 239, 0.8);
@@ -232,6 +236,8 @@ const styles = `
       height: 400px;
     }
   }
+
+
 `;
 
 // Usage Example Component with proper image source
@@ -244,7 +250,7 @@ const ExampleUsage = () => {
   return (
     <div>
       <AttractivePinturaEditor
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
+        // src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
         onProcess={handleImageProcess}
       />
     </div>

@@ -34,8 +34,8 @@ function App() {
             <ExampleModal />
           </Route>
           <Route path="/new">
-            <div style={{ padding: '20px' }}>
-              <h2> Pintura Editor</h2>
+            <div style={{ padding: '20px', paddingTop: '0px' }}>
+              <h2 style={{ marginTop: '0px' }}>Pintura Editor</h2>
               <AttractivePinturaEditor
                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
                 onProcess={handleImageProcess}
