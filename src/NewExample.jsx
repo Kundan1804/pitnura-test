@@ -16,7 +16,6 @@ import {
 import "@pqina/pintura/pintura.css";
 import annotationsData from './annotations';
 
-
 setPlugins(plugin_sticker);
 
 plugin_sticker_locale_en_gb.stickerLabel = 'Image';
@@ -51,53 +50,45 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     stickers: ['😅', '🏃', '🏃‍♂️'],
     stickerStickToImage: true,
 
-    layoutDirectionPreference: 'auto', // Auto-adapt to screen orientation
-    layoutHorizontalUtilsPreference: 'left', // Tools on left for better UX
-    layoutVerticalUtilsPreference: 'bottom', // Mobile-friendly bottom nav
-    layoutVerticalToolbarPreference: 'top', // Toolbar at top for easy access
-    layoutVerticalControlGroupsPreference: 'bottom', // Controls at bottom
-    layoutVerticalControlTabsPreference: 'bottom', // Tabs below controls
+    layoutDirectionPreference: 'auto',
+    layoutHorizontalUtilsPreference: 'left',
+    layoutVerticalUtilsPreference: 'bottom',
+    layoutVerticalToolbarPreference: 'top',
+    layoutVerticalControlGroupsPreference: 'bottom',
+    layoutVerticalControlTabsPreference: 'bottom',
 
-    // Visual Enhancements
-    enableTransparencyGrid: true, // Show transparency grid for transparent images
-    previewUpscale: true, // Better preview scaling
-    previewMaskOpacity: 0.92, // Subtle mask opacity
-    zoomMaskOpacity: 0.88, // Smooth zoom overlay
+    enableTransparencyGrid: true,
+    previewUpscale: true,
+    previewMaskOpacity: 0.92,
+    zoomMaskOpacity: 0.88,
 
-    // Performance & Quality
-    previewImageDataMaxSize: { width: 2048, height: 2048 }, // High quality preview
-    elasticityMultiplier: 8, // Smooth elastic interactions
+    previewImageDataMaxSize: { width: 2048, height: 2048 },
+    elasticityMultiplier: 8,
 
-    // Animation & Interactions
-    animations: 'auto', // Enable smooth animations
-    fixScrollDirection: true, // Fix macOS scroll direction
+    animations: 'auto',
+    fixScrollDirection: true,
 
-    // Zoom Configuration
     enableZoom: true,
     enableZoomControls: true,
     zoomPresetOptions: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 8],
     zoomAdjustStep: 0.25,
-    zoomAdjustFactor: 0.15, // Smooth zoom speed
-    zoomAdjustWheelFactor: 1.2, // Responsive scroll zoom
+    zoomAdjustFactor: 0.15,
+    zoomAdjustWheelFactor: 1.2,
     zoomLevel: 0.58,
-    
-    // Enable User-Friendly Features
-    enablePan: true,
-    enableDropImage: true, // Drag & drop support
-    enablePasteImage: true, // Paste from clipboard
-    enableBrowseImage: true, // Click to browse for image
 
-    // Button Configuration
-    enableButtonClose: false, // Customize based on your modal needs
+    enablePan: true,
+    enableDropImage: true,
+    enablePasteImage: true,
+    enableBrowseImage: true,
+
+    enableButtonClose: false,
     enableButtonExport: true,
     enableButtonRevert: true,
-    enableNavigateHistory: true, // Undo/redo buttons
+    enableNavigateHistory: true,
 
-    // Toolbar & Utils
     enableToolbar: true,
     enableUtils: true,
 
-    // ✅ Custom color controls for annotate + decorate
     markupEditorShapeStyleControls: createMarkupEditorShapeStyleControls({
       backgroundColor: createMarkupEditorBackgroundColorControl(colorOptions, {
         enableInput: true,
@@ -128,15 +119,11 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
       ...plugin_sticker_locale_en_gb,
     },
 
-    // Event Handlers
     handleEvent: (type, detail) => {
-      // Log events for debugging (remove in production)
       console.log(`Pintura Event: ${type}`, detail);
     },
 
-    // Confirmation Hooks for Better UX
     willClose: async () => {
-      // Add confirmation dialog if user has unsaved changes
       const hasChanges = editorRef.current?.editor?.history?.length > 0;
       if (hasChanges) {
         return window.confirm('You have unsaved changes. Are you sure you want to close?');
@@ -149,24 +136,16 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     },
 
     willProcessImage: async () => {
-      // Show processing status
       if (editorRef.current?.editor) {
         editorRef.current.editor.status = ['Processing image...', 0.5];
-
-        // Simulate processing delay (remove this in production)
         await new Promise(resolve => setTimeout(resolve, 500));
-
-        // Clear status
         editorRef.current.editor.status = undefined;
       }
       return true;
     },
 
-    // Custom request handling for assets
     willRequest: (url, info) => {
       const { resourceType } = info;
-
-      // Add custom headers for image requests if needed
       if (resourceType === 'image') {
         return {
           headers: {
@@ -174,14 +153,12 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
           },
         };
       }
-
-      // Allow all stylesheet requests from CDN
       if (resourceType === 'stylesheet') {
         return true;
       }
     },
 
-    ...props // Allow overriding any config
+    ...props
   };
 
   const addAnnotations = () => {
@@ -190,11 +167,10 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
         editorRef.current.editor.util = 'annotate';
 
         const currentState = editorRef.current.editor.imageState;
-
         const newState = {
           ...currentState,
           ...annotationsData
-        }
+        };
 
         editorRef.current.editor.imageState = newState;
         setAnnotationsAdded(true);
@@ -215,7 +191,6 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
         onLoad={addAnnotations}
         onProcess={onProcess}
       // onUpdate={handleEditorUpdate}
-
       // onProcess={({ dest }) => setResult(URL.createObjectURL(dest))}
       />
     </div>
@@ -230,13 +205,12 @@ const styles = `
     background: #fff;
     position: relative;
     width: 1100px;
-      margin: 0 auto;       
-  display: block;
-]  }
+    margin: 0 auto;
+    display: block;
+  }
   .pintura-editor {
     height: 800px;
     min-height: 400px;
-
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --grid-color-even: rgba(248, 249, 250, 0.8);
     --grid-color-odd: rgba(233, 236, 239, 0.8);
@@ -253,33 +227,25 @@ const styles = `
     --pintura-button-text-color: #475569;
     --pintura-button-border-radius: 6px;
   }
-  
-  /* Mobile responsiveness */
   @media (max-width: 768px) {
     .pintura-editor {
       height: 500px;
     }
   }
-  
   @media (max-width: 480px) {
     .pintura-editor {
       height: 400px;
     }
   }
-
-
 `;
 
-// Usage Example Component with proper image source
 const ExampleUsage = () => {
-  const [result, setResult] = useState('');
   const editorRef = useRef(null);
-  const [annotationsAdded, setAnnotationsAdded] = useState(false);
   const [frameSrc, setFrameSrc] = useState(null);
 
 
   useEffect(() => {
-    // take from your src_file JSON
+    // sample src_file JSON
     const srcFile = {
       "frame": {
         "width": 1080.0,
@@ -292,7 +258,7 @@ const ExampleUsage = () => {
         1
       ],
       "backgroundColorHex": "#ee1fdc"
-    }
+    };
 
     const [r, g, b, a] = srcFile.backgroundColor;
     const cssColor = `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${a})`;
@@ -320,6 +286,7 @@ const ExampleUsage = () => {
   return (
     <div>
       <AttractivePinturaEditor
+        ref={editorRef}
         src={frameSrc}
         // src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
         onProcess={handleImageProcess}
