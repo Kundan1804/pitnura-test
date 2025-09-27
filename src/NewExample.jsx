@@ -74,7 +74,7 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     zoomAdjustStep: 0.25,
     zoomAdjustFactor: 0.15,
     zoomAdjustWheelFactor: 1.2,
-    zoomLevel: 0.58,
+    zoomLevel: 0.5,
 
     enablePan: true,
     enableDropImage: true,
@@ -120,7 +120,7 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     },
 
     handleEvent: (type, detail) => {
-      console.log(`Pintura Event: ${type}`, detail);
+      // console.log(`Pintura Event: ${type}`, detail);
     },
 
     willClose: async () => {
@@ -161,7 +161,7 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     ...props
   };
 
-  const addAnnotations = () => {
+  const addAnnotations = async () => {
     if (editorRef.current && !annotationsAdded) {
       try {
         editorRef.current.editor.util = 'annotate';
@@ -178,7 +178,22 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
       } catch (error) {
         console.error('Error adding annotations:', error);
       }
+
+
+      const editor = editorRef.current?.editor;
+      if (!editor) return;
+
+      // get the current image as a Blob
+        // const blob = await editor.getResult({
+        //   mimeType: 'image/png',
+        //   width: 300,     // optional thumbnail size
+        // });
+
+        // const url = URL.createObjectURL(blob);
+      console.log('Thumbnail URL:', editor);
+      // setThumbnailUrl(url);
     }
+
   };
 
 
@@ -189,7 +204,14 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
         {...editorConfig}
         src={src}
         onLoad={addAnnotations}
-        onProcess={onProcess}
+      // onProcess={({ dest }) => {
+      //   if (onThumbnail) {
+      //     const url = URL.createObjectURL(dest);
+      //     onThumbnail(url); // ✅ call parent callback
+      //   }
+      // }}
+
+
       // onUpdate={handleEditorUpdate}
       // onProcess={({ dest }) => setResult(URL.createObjectURL(dest))}
       />
@@ -204,7 +226,7 @@ const styles = `
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     background: #fff;
     position: relative;
-    width: 1100px;
+    width: 900px;
     margin: 0 auto;
     display: block;
   }
@@ -237,12 +259,16 @@ const styles = `
       height: 400px;
     }
   }
+  .canvas {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 const ExampleUsage = () => {
   const editorRef = useRef(null);
   const [frameSrc, setFrameSrc] = useState(null);
-
+  const [thumbnailUrl, setThumbnailUrl] = useState(null);
 
   useEffect(() => {
     // sample src_file JSON
@@ -282,15 +308,23 @@ const ExampleUsage = () => {
     // Handle the processed image here
   };
 
+  // generate thumbnail after editor has loaded image
+
 
   return (
     <div>
       <AttractivePinturaEditor
         ref={editorRef}
         src={frameSrc}
-        // src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
-        onProcess={handleImageProcess}
+      // onThumbnail={(url) => setThumbnailUrl(url)} // ✅ pass callback
       />
+
+      {thumbnailUrl && (
+        <div style={{ marginTop: "16px" }}>
+          <h3>Thumbnail Preview</h3>
+          <img src={thumbnailUrl} alt="Preview" style={{ border: "1px solid #ccc", borderRadius: 8 }} />
+        </div>
+      )}
     </div>
   );
 };
