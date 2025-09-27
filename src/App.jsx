@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Example from "./Example";
 import ExampleModal from "./ExampleModal";
-import AttractivePinturaEditor from "./NewExample";
+import {ExampleUsage} from "./NewExample";
 
 import "./App.css";
 
@@ -36,8 +36,7 @@ function App() {
           <Route path="/new">
             <div style={{ padding: '20px', paddingTop: '0px' }}>
               <h2 style={{ marginTop: '0px' }}>Pintura Editor</h2>
-              <AttractivePinturaEditor
-                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
+              <ExampleUsage
                 onProcess={handleImageProcess}
               />
             </div>

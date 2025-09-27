@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-
+import annotationsData from './annotations';
 // react-pintura
 import { PinturaEditor } from '@pqina/react-pintura';
 
@@ -59,7 +59,7 @@ plugin_sticker_locale_en_gb.stickerIcon = `
   <path d="M5 15l4-4 4 4 5-5 4 4"/>
 </g>`;
 
-  const colorOptions = createMarkupEditorColorOptions(createDefaultColorOptions());
+const colorOptions = createMarkupEditorColorOptions(createDefaultColorOptions());
 
 
 const editorDefaults = {
@@ -128,11 +128,12 @@ export default function Example() {
                 "height": 1080.0
             },
             "backgroundColor": [
-                1.0,
-                1.0,
-                1.0,
+                0.9334183931350708,
+                0.12500935792922974,
+                0.8660511374473572,
                 1
-            ]
+            ],
+            "backgroundColorHex": "#ee1fdc"
         }
 
         // Convert normalized rgba [0–1] into CSS rgba()
@@ -166,50 +167,8 @@ export default function Example() {
 
                 const newState = {
                     ...currentState,
-
-                    "cropLimitToImage": true,
-                    "cropMinSize": {
-                        "width": 1,
-                        "height": 1
-                    },
-                    "cropMaxSize": {
-                        "width": 32768,
-                        "height": 32768
-                    },
-                    "flipX": false,
-                    "flipY": false,
-                    "rotation": 0,
-                    "manipulation": [],
-                    "redaction": [],
-                    "annotation": [
-                        {
-                            "x": "57.22%",
-                            "y": "90.56%",
-                            "width": "38.98%",
-                            "height": "7.13%",
-                            "text": "JUST $1 PER CUP",
-                            "disableTextScale": true,
-                            "color": [
-                                0.6352941393852234,
-                                0.18039216101169586,
-                                0.6823529601097107,
-                                1
-                            ],
-                            "fontSize": 50.0,
-                            "fontFamily": "Kanit",
-                            "lineHeight": "120%",
-                            "rotation": 0,
-                            "opacity": 1,
-                            "id": "30:169",
-                            "disableErase": true,
-                            "fontVariant": "normal",
-                            "format": "text",
-                            "textAlign": "CENTER",
-                            "isSelected": false,
-                            "isEditing": false
-                        },
-                    ]
-                };
+                    ...annotationsData
+                }
 
                 editorRef.current.editor.imageState = newState;
                 setAnnotationsAdded(true);
@@ -228,8 +187,8 @@ export default function Example() {
                 <PinturaEditor
                     {...editorDefaults}
                     ref={editorRef}
-                    // src={frameSrc}
-                    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
+                    src={frameSrc}
+                    // src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
                     onLoad={addAnnotations}
                     onUpdate={handleEditorUpdate}
                     onProcess={({ dest }) => setResult(URL.createObjectURL(dest))}

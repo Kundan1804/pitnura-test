@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { PinturaEditor } from "@pqina/react-pintura";
 import {
   getEditorDefaults,
@@ -14,6 +14,8 @@ import {
   createMarkupEditorShapeStyleControls,
 } from "@pqina/pintura";
 import "@pqina/pintura/pintura.css";
+import annotationsData from './annotations';
+
 
 setPlugins(plugin_sticker);
 
@@ -27,6 +29,7 @@ plugin_sticker_locale_en_gb.stickerIcon = `
 
 const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
   const editorRef = useRef(null);
+  const [annotationsAdded, setAnnotationsAdded] = useState(false);
 
   const editorDefaults = getEditorDefaults();
 
@@ -76,7 +79,8 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     zoomAdjustStep: 0.25,
     zoomAdjustFactor: 0.15, // Smooth zoom speed
     zoomAdjustWheelFactor: 1.2, // Responsive scroll zoom
-    zoomLevel: 1,
+    zoomLevel: 0.58,
+    
     // Enable User-Friendly Features
     enablePan: true,
     enableDropImage: true, // Drag & drop support
@@ -180,13 +184,39 @@ const AttractivePinturaEditor = ({ src, onProcess, ...props }) => {
     ...props // Allow overriding any config
   };
 
+  const addAnnotations = () => {
+    if (editorRef.current && !annotationsAdded) {
+      try {
+        editorRef.current.editor.util = 'annotate';
+
+        const currentState = editorRef.current.editor.imageState;
+
+        const newState = {
+          ...currentState,
+          ...annotationsData
+        }
+
+        editorRef.current.editor.imageState = newState;
+        setAnnotationsAdded(true);
+        console.log('Annotations added successfully');
+      } catch (error) {
+        console.error('Error adding annotations:', error);
+      }
+    }
+  };
+
+
   return (
     <div className="pintura-editor-wrapper">
       <PinturaEditor
         ref={editorRef}
         {...editorConfig}
         src={src}
+        onLoad={addAnnotations}
         onProcess={onProcess}
+      // onUpdate={handleEditorUpdate}
+
+      // onProcess={({ dest }) => setResult(URL.createObjectURL(dest))}
       />
     </div>
   );
@@ -242,14 +272,55 @@ const styles = `
 
 // Usage Example Component with proper image source
 const ExampleUsage = () => {
+  const [result, setResult] = useState('');
+  const editorRef = useRef(null);
+  const [annotationsAdded, setAnnotationsAdded] = useState(false);
+  const [frameSrc, setFrameSrc] = useState(null);
+
+
+  useEffect(() => {
+    // take from your src_file JSON
+    const srcFile = {
+      "frame": {
+        "width": 1080.0,
+        "height": 1080.0
+      },
+      "backgroundColor": [
+        0.9334183931350708,
+        0.12500935792922974,
+        0.8660511374473572,
+        1
+      ],
+      "backgroundColorHex": "#ee1fdc"
+    }
+
+    const [r, g, b, a] = srcFile.backgroundColor;
+    const cssColor = `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${a})`;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = srcFile.frame.width;
+    canvas.height = srcFile.frame.height;
+
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = cssColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    setFrameSrc(canvas.toDataURL('image/png'));
+  }, []);
+
+
   const handleImageProcess = (imageState) => {
     console.log('Image processed:', imageState);
     // Handle the processed image here
   };
 
+
   return (
     <div>
       <AttractivePinturaEditor
+        src={frameSrc}
         // src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"
         onProcess={handleImageProcess}
       />
